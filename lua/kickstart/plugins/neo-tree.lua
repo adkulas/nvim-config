@@ -19,25 +19,65 @@ return {
     },
     config = function()
       require('lsp-file-operations').setup()
-    end,
-  },
-  {
-    's1n7ax/nvim-window-picker',
-    version = '2.*',
-    config = function()
-      require('window-picker').setup {
-        filter_rules = {
-          include_current_win = false,
-          autoselect_one = true,
-          -- filter using buffer options
-          bo = {
-            -- if the file type is one of following, the window will be ignored
-            filetype = { 'neo-tree', 'neo-tree-popup', 'notify' },
-            -- if the buffer type is one of following, the window will be ignored
-            buftype = { 'terminal', 'quickfix' },
+      require('neo-tree').setup {
+        close_if_last_window = true, -- closes Neo-tree if it's the last window open
+        enable_git_status = true,
+        enable_diagnostics = true,
+        window = {
+          position = 'left',
+          width = 30,
+          mappings = {
+            ['<space>'] = 'none', -- disable space toggling preview
+          },
+        },
+        filesystem = {
+          filtered_items = {
+            visible = true, -- show hidden files by default
+            hide_dotfiles = false,
+            hide_gitignored = true,
+          },
+          follow_current_file = {
+            enabled = true,
+          },
+          hijack_netrw_behavior = 'open_default', -- replaces netrw
+        },
+        buffers = {
+          follow_current_file = {
+            enabled = true,
+          },
+        },
+        git_status = {
+          window = {
+            position = 'float',
           },
         },
       }
     end,
   },
+  vim.keymap.set('n', '<leader>e', function()
+    local file = vim.fn.expand '%:p'
+    if file == '' then
+      file = vim.fn.getcwd()
+    else
+      local f = io.open(file, 'r')
+      if f then
+        f:close()
+      else
+        file = vim.fn.getcwd()
+      end
+    end
+
+    local cwd = vim.fn.getcwd()
+    local file_lower = file:lower()
+    local cwd_lower = cwd:lower()
+
+    require('neo-tree.command').execute {
+      action = 'focus',
+      source = 'filesystem',
+      position = 'left',
+      reveal_file = file,
+      -- Only force cwd change if file is truly outside cwd (not just casing)
+      reveal_force_cwd = not vim.startswith(file_lower, cwd_lower),
+    }
+  end, { desc = 'Open Neo-tree and reveal file' }),
 }
