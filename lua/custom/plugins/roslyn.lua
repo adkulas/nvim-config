@@ -32,7 +32,9 @@ return {
     -- ignore_target = function(target)
     --     return string.match(target, "Foo.sln") ~= nil
     -- end
-    ignore_target = nil,
+    ignore_target = function(target)
+        return string.match(target, "Lms.sln") ~= nil
+    end,
 
     -- Whether or not to look for solution files in the child of the (root).
     -- Set this to true if you have some projects that are not a child of the
