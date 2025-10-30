@@ -65,6 +65,7 @@ require('lazy').setup({
   -- { import = 'custom.plugins' },
   require 'custom.plugins.roslyn',
   require 'custom.plugins.fzf-lua',
+  require 'custom.plugins.yazi',
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
