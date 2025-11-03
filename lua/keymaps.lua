@@ -51,4 +51,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Normal mode: move current line up/down
+vim.keymap.set('n', '<A-j>', ':m .+1<CR>==')
+vim.keymap.set('n', '<A-k>', ':m .-2<CR>==')
+
+-- Visual mode: move selected block up/down
+vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv")
+vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv")
+
+
 -- vim: ts=2 sts=2 sw=2 et

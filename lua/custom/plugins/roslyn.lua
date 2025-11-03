@@ -44,6 +44,13 @@ return {
     -- Whether or not to lock the solution target after the first attach.
     -- This will always attach to the target in `vim.g.roslyn_nvim_selected_solution`.
     -- NOTE: You can use `:Roslyn target` to change the target
-    lock_target = false,
-  }, --
+  },
+  config = function()
+    -- Create a custom command to show the current solution
+    vim.api.nvim_create_user_command("RoslynShowSolution", function()
+      local sol = vim.g.roslyn_nvim_selected_solution
+      print(sol and ("Current solution: " .. sol) or "No solution selected")
+    end, {})
+    
+  end,
 }

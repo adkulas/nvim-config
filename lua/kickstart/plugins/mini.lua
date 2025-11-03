@@ -32,6 +32,38 @@ return {
         return '%2l:%-2v'
       end
 
+      -- Add LSP client info to statusline
+      ---@diagnostic disable-next-line: duplicate-set-field
+      statusline.section_lsp = function()
+        local clients = vim.lsp.get_clients({ bufnr = 0 })
+        if #clients == 0 then
+          return ''
+        end
+        
+        local client_names = {}
+        local has_roslyn = false
+        
+        for _, client in pairs(clients) do
+          table.insert(client_names, client.name)
+          if client.name == 'roslyn' then
+            has_roslyn = true
+          end
+        end
+        
+        local lsp_info = 'LSP: ' .. table.concat(client_names, ', ')
+        
+        -- Add Roslyn solution info if roslyn is active
+        if has_roslyn then
+          local sol = vim.g.roslyn_nvim_selected_solution
+          if sol then
+            local solution_name = vim.fn.fnamemodify(sol, ':t')  -- Get just the filename
+            lsp_info = lsp_info .. ' [' .. solution_name .. ']'
+          end
+        end
+        
+        return lsp_info
+      end
+
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
